@@ -111,6 +111,27 @@
 
 /* ── Login animations ───────────────────────────────────────────────────────── */
 
+/* Error: card sacude horizontalmente — vibración de falla eléctrica */
+@keyframes fault-card-shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(5px); }
+  45%       { transform: translateX(-4px); }
+  60%       { transform: translateX(3px); }
+  75%       { transform: translateX(-2px); }
+}
+
+/* Error: halo rojo visible en el card — pulso de falla contenido */
+@keyframes fault-border-pulse {
+  0%   { box-shadow: none; }
+  20%  { box-shadow: 0 0 0 2px rgba(239,68,68,0.8), 0 0 22px rgba(239,68,68,0.3); }
+  65%  { box-shadow: 0 0 0 1px rgba(239,68,68,0.5), 0 0 12px rgba(239,68,68,0.15); }
+  100% { box-shadow: none; }
+}
+
+/* Clase unificada: shake + border sobre el card wrapper */
+.login-fault-card { animation: fault-card-shake 0.5s ease-in-out, fault-border-pulse 0.6s ease-out; }
+
 /* Error: ícono parpadea en opacidad — corte de tensión momentáneo */
 @keyframes fault-icon-flicker {
   0%,100% { opacity: 1; }
@@ -120,14 +141,6 @@
 }
 
 .login-fault-icon { animation: fault-icon-flicker 0.4s ease-in-out; }
-
-/* Error: halo rojo tenue en el card — un solo pulso contenido */
-@keyframes fault-border-pulse {
-  0%,100% { box-shadow: none; }
-  35%     { box-shadow: 0 0 0 1px rgba(239,68,68,0.45), 0 0 14px rgba(239,68,68,0.12); }
-}
-
-.login-fault-border { animation: fault-border-pulse 0.4s ease-in-out; }
 
 /* Success: ícono se enciende en ámbar — warmup gradual */
 @keyframes bulb-glow {
@@ -139,12 +152,21 @@
 
 .login-bulb-on { animation: bulb-glow 0.9s ease-out forwards; }
 
-/* Success: barrido de luz suave por toda la página, de abajo hacia arriba */
-@keyframes sweep-up {
-  0%   { transform: translateY(100vh); opacity: 0; }
-  18%  { opacity: 1; }
-  72%  { opacity: 0.65; }
-  100% { transform: translateY(-100vh); opacity: 0; }
+/* Success: halo ámbar en el card — circuito conectado */
+@keyframes success-card-glow {
+  0%   { box-shadow: none; }
+  30%  { box-shadow: 0 0 0 2px rgba(251,191,36,0.55), 0 0 24px rgba(251,191,36,0.22); }
+  100% { box-shadow: none; }
+}
+
+.login-success-glow { animation: success-card-glow 0.9s ease-out forwards; }
+
+/* Success: destello que explota desde el card hacia afuera — circuito energizado */
+@keyframes success-flash {
+  0%   { opacity: 0; transform: scale(0.55); }
+  14%  { opacity: 1;  transform: scale(1); }
+  68%  { opacity: 0.88; transform: scale(1); }
+  100% { opacity: 0;  transform: scale(1.04); }
 }
 
 .login-page-sweep {
@@ -152,15 +174,31 @@
   inset: 0;
   pointer-events: none;
   z-index: 40;
-  background: linear-gradient(
-    to top,
-    transparent 0%,
-    rgba(14, 165, 233, 0.05) 25%,
-    rgba(248, 250, 252, 0.09) 50%,
-    rgba(14, 165, 233, 0.05) 75%,
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(251, 191, 36, 0.42) 22%,
+    rgba(14, 165, 233, 0.18) 58%,
     transparent 100%
   );
-  animation: sweep-up 1s ease-in-out forwards;
+  transform-origin: center;
+  animation: success-flash 1.25s ease-out forwards;
+}
+
+/* Error: flash blanco tenue en toda la página — descarga de falla */
+@keyframes error-page-flash {
+  0%   { opacity: 0; }
+  18%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.login-error-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.18);
+  animation: error-page-flash 0.5s ease-out forwards;
 }
 
 @keyframes pro-sweep {
@@ -168,9 +206,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .login-fault-card,
   .login-fault-icon,
-  .login-fault-border,
+  .login-error-flash,
   .login-page-sweep,
+  .login-success-glow,
   .login-bulb-on      { animation: none; }
   .pro-card-border-wrap { animation: none; background: #334155; }
 }
