@@ -17,10 +17,11 @@ export function Login() {
   const [error, setError] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const [loginState, setLoginState] = useState<LoginState>('idle')
+  const [showErrorFlash, setShowErrorFlash] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const iconRef = useRef<HTMLDivElement>(null)
 
-  if (isAuthenticated) return <Navigate to="/calculator" replace />
+  if (isAuthenticated && loginState !== 'success') return <Navigate to="/calculator" replace />
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,21 +30,24 @@ export function Login() {
     try {
       await login(form)
       setLoginState('success')
+      cardRef.current?.classList.add('login-success-glow')
       setTimeout(() => navigate('/calculator'), 950)
     } catch (err) {
       setLoginState('error')
       setError(err instanceof ApiError ? err.message : 'Error al iniciar sesión')
+      setShowErrorFlash(true)
+      setTimeout(() => setShowErrorFlash(false), 550)
       const card = cardRef.current
       if (card) {
-        card.classList.add('login-fault-border')
-        card.addEventListener('animationend', () => card.classList.remove('login-fault-border'), { once: true })
+        card.classList.add('login-fault-card')
+        setTimeout(() => card.classList.remove('login-fault-card'), 700)
       }
       const icon = iconRef.current
       if (icon) {
         icon.classList.add('login-fault-icon')
         icon.addEventListener('animationend', () => icon.classList.remove('login-fault-icon'), { once: true })
       }
-      setTimeout(() => setLoginState('idle'), 500)
+      setTimeout(() => setLoginState('idle'), 700)
     }
   }
 
@@ -52,6 +56,7 @@ export function Login() {
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center">
+      {showErrorFlash && <div className="login-error-flash" />}
       {isSuccess && <div className="login-page-sweep" />}
 
       <div ref={cardRef}>
