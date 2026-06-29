@@ -73,6 +73,10 @@ export function Subscription() {
   const planLabel = isPro ? 'PRO' : isBasico ? 'BÁSICO' : 'GRATIS'
   const planVariant = isPro ? 'success' : isBasico ? 'accent' : 'secondary'
 
+  const planTier = isPro ? 2 : isBasico ? 1 : 0
+  const basicoNote = planTier < 1 ? "Para contratar este plan, escribe al administrador." : undefined
+  const proNote = planTier < 2 ? "Para contratar este plan, escribe al administrador." : undefined
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-2">
@@ -153,7 +157,7 @@ export function Subscription() {
                 name="Básico"
                 isActive={isBasico}
                 accentClass="text-accent"
-                note="Para activar este plan, contacta al administrador."
+                note={basicoNote}
                 features={[
                   { text: 'Plantillas ilimitadas', included: true },
                   { text: 'Historial de 1 mes', included: true },
@@ -167,7 +171,7 @@ export function Subscription() {
                 name="Pro"
                 isActive={isPro}
                 accentClass="text-primary"
-                note="Para activar este plan, contacta al administrador."
+                note={proNote}
                 features={[
                   { text: 'Plantillas ilimitadas', included: true },
                   { text: 'Historial permanente', included: true },

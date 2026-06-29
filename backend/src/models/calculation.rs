@@ -20,6 +20,11 @@ pub struct Calculation {
 
 #[derive(Debug, Serialize, Deserialize, Validate, Clone)]
 pub struct CalcInput {
+    #[validate(length(min = 1, message = "Nombre del cálculo requerido"))]
+    pub nombre: String,
+
+    pub descripcion: Option<String>,
+
     #[validate(length(min = 1, message = "Subtipo requerido"))]
     pub subtipo: String,
 
@@ -46,12 +51,6 @@ pub struct CalcInput {
 
     #[validate(range(min = 0.01, message = "Distancia debe ser mayor que 0"))]
     pub distancia_m: f64,
-
-    #[validate(length(min = 1, message = "Terminal i requerida"))]
-    pub terminal_i: String,
-
-    #[validate(length(min = 1, message = "Terminal j requerida"))]
-    pub terminal_j: String,
 
     #[validate(length(min = 1, message = "Programa de plantilla requerido"))]
     pub template_program_code: String,

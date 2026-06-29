@@ -25,7 +25,7 @@ impl TemplateGenerator for DigsilentGenerator {
             _ => 0,
         };
 
-        let nombre = format!("{} - {} - {}", input.subtipo, input.conductor_code, input.fase_conexion);
+        let tipo_nombre = format!("{} - {} - {}", input.subtipo, input.conductor_code, input.fase_conexion);
         let line_name = format!("Line - {} - {}", input.conductor_code, input.fase_conexion);
         let line_model = match c.line_type.as_str() {
             "OHL" => "Overhead Line",
@@ -55,7 +55,7 @@ impl TemplateGenerator for DigsilentGenerator {
 
         let data = json!({
             "section1_line_type_basic": {
-                "name": nombre,
+                "name": tipo_nombre,
                 "rated_voltage_kv": input.voltaje_kv,
                 "i_ground_ka": c.i_ground_ka,
                 "i_air_ka": c.i_air_ka,
@@ -81,11 +81,7 @@ impl TemplateGenerator for DigsilentGenerator {
             },
             "section3_elm_lne_basic": {
                 "name": line_name,
-                "type": nombre,
-                "terminal_i": input.terminal_i,
-                "terminal_j": input.terminal_j,
-                "zone": "Terminal i",
-                "area": "Terminal i",
+                "type": tipo_nombre,
                 "parallel_lines": 1,
                 "length_km": lkm,
                 "derating_factor": 1,
@@ -132,9 +128,10 @@ impl TemplateGenerator for DigsilentGenerator {
 
         let text = format!(
 r#"RESUMEN FINAL PARA COPIAR EN DIgSILENT
-
+Cálculo: {calc_nombre}
+{calc_desc}
 1) LINE TYPE - BASIC DATA
-Name: {nombre}
+Name: {tipo_nombre}
 Rated Voltage: {voltaje:.3} kV
 Rated Current in ground: {i_ground:.3} kA
 Rated Current in air: {i_air:.3} kA
@@ -163,11 +160,7 @@ Ins. Factor: 0
 
 3) LINE / ELM LNE - BASIC DATA
 Name: {line_name}
-Type: {nombre}
-Terminal i: {ti}
-Terminal j: {tj}
-Zone: Terminal i
-Area: Terminal i
+Type: {tipo_nombre}
 Out of Service: NO marcar
 Number of parallel Lines: 1
 Length of Line: {lkm:.4} km
@@ -211,7 +204,9 @@ FUENTES / CRITERIO DE DATOS
 - Reactancias X': valores prácticos aproximados para cables BT cortos; validar con ficha exacta del fabricante/CENTROSUR si tu tesis exige trazabilidad completa.
 - B', B0', Bn' y Bpn': 0 uS/km para tramos BT cortos en flujo de carga, como simplificación usual.
 - Corrientes Iground/Iair: valores referenciales para selección preliminar; validar con ampacidad de fabricante según instalación."#,
-            nombre = nombre,
+            calc_nombre = input.nombre,
+            calc_desc = input.descripcion.as_deref().map(|d| format!("Descripción: {}\n", d)).unwrap_or_default(),
+            tipo_nombre = tipo_nombre,
             voltaje = input.voltaje_kv,
             i_ground = c.i_ground_ka,
             i_air = c.i_air_ka,
@@ -228,8 +223,6 @@ FUENTES / CRITERIO DE DATOS
             b0 = c.b0_us_km,
             neutro_lf_text = neutro_lf_text,
             line_name = line_name,
-            ti = input.terminal_i,
-            tj = input.terminal_j,
             lkm = lkm,
             line_model = line_model,
             subtipo = input.subtipo,
@@ -246,7 +239,7 @@ FUENTES / CRITERIO DE DATOS
             x0_total = x0 * lkm,
         );
 
-        let html = fill_html_template(html_template, &nombre, &line_name, input, c, fases, neutros, r0, x0, lkm, line_model);
+        let html = fill_html_template(html_template, &tipo_nombre, &line_name, c, fases, neutros, r0, x0, lkm, line_model, input.voltaje_kv);
 
         TemplateOutput { data, text, html }
     }
@@ -256,7 +249,6 @@ fn fill_html_template(
     template: &str,
     nombre: &str,
     line_name: &str,
-    input: &CalcInput,
     c: &ConductorType,
     fases: i32,
     neutros: i32,
@@ -264,6 +256,7 @@ fn fill_html_template(
     x0: f64,
     lkm: f64,
     line_model: &str,
+    voltaje_kv: f64,
 ) -> String {
     let neutro_basic_block = if neutros == 1 {
         format!(
@@ -301,7 +294,7 @@ fn fill_html_template(
 
     template
         .replace("{{name}}", nombre)
-        .replace("{{rated_voltage_kv}}", &format!("{:.3}", input.voltaje_kv))
+        .replace("{{rated_voltage_kv}}", &format!("{:.3}", voltaje_kv))
         .replace("{{i_ground_ka}}", &format!("{:.3}", c.i_ground_ka))
         .replace("{{i_air_ka}}", &format!("{:.3}", c.i_air_ka))
         .replace("{{nominal_freq}}", "60")
@@ -320,8 +313,6 @@ fn fill_html_template(
         .replace("{{b0_us_km}}", &format!("{:.4}", c.b0_us_km))
         .replace("{{neutro_lf_block}}", &neutro_lf_block)
         .replace("{{line_name}}", line_name)
-        .replace("{{terminal_i}}", &input.terminal_i)
-        .replace("{{terminal_j}}", &input.terminal_j)
         .replace("{{length_km}}", &format!("{:.4}", lkm))
         .replace("{{type_of_line}}", line_model)
 }
