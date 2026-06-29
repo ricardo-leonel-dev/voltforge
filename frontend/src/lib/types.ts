@@ -10,6 +10,7 @@ export interface User {
   email: string
   name: string
   role: 'user' | 'admin' | 'superadmin'
+  avatar_url?: string | null
   created_at: string
 }
 

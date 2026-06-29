@@ -10,6 +10,7 @@ pub struct User {
     pub name: String,
     pub password_hash: String,
     pub role: String,
+    pub avatar_url: Option<String>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -20,6 +21,7 @@ pub struct UserPublic {
     pub email: String,
     pub name: String,
     pub role: String,
+    pub avatar_url: Option<String>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -43,6 +45,15 @@ pub struct LoginRequest {
     pub email: String,
 
     pub password: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct UpdateMeRequest {
+    pub name: Option<String>,
+    pub email: Option<String>,
+    pub avatar_url: Option<String>,
+    pub current_password: Option<String>,
+    pub new_password: Option<String>,
 }
 
 #[derive(Debug, Serialize)]

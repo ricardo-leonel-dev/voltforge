@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, org_id, email, name, role, created_at FROM users WHERE id = $1",
+  "query": "SELECT id, org_id, email, name, role, avatar_url, created_at\n         FROM users WHERE org_id = $1 ORDER BY created_at DESC",
   "describe": {
     "columns": [
       {
@@ -30,6 +30,11 @@
       },
       {
         "ordinal": 5,
+        "name": "avatar_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
         "name": "created_at",
         "type_info": "Timestamptz"
       }
@@ -45,8 +50,9 @@
       false,
       false,
       false,
+      true,
       false
     ]
   },
-  "hash": "2f1d4b5f48ecd5b3c7f33f9621a35e1292c7addb0ea278e9675bca0e59a9d9ac"
+  "hash": "a14530d42303c0b920eca833d237247c88e8c9ec90be39e5b5d8550d90a41683"
 }
