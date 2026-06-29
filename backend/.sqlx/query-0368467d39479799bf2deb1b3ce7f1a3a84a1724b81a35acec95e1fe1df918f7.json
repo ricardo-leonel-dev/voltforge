@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO subscriptions (org_id, plan, status) VALUES ($1, 'free', 'active')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0368467d39479799bf2deb1b3ce7f1a3a84a1724b81a35acec95e1fe1df918f7"
+}

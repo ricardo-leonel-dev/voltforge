@@ -1,0 +1,128 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, code, display_name, material, line_type,\n                r_ohm_km, x_ohm_km, rn_ohm_km, xn_ohm_km,\n                rpn_ohm_km, xpn_ohm_km, b_us_km, b0_us_km,\n                bn_us_km, bpn_us_km, i_ground_ka, i_air_ka,\n                active, created_at\n         FROM conductor_types\n         WHERE active = TRUE\n         ORDER BY code",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "code",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "display_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "material",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "line_type",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "r_ohm_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 6,
+        "name": "x_ohm_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 7,
+        "name": "rn_ohm_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 8,
+        "name": "xn_ohm_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 9,
+        "name": "rpn_ohm_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 10,
+        "name": "xpn_ohm_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 11,
+        "name": "b_us_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 12,
+        "name": "b0_us_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 13,
+        "name": "bn_us_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 14,
+        "name": "bpn_us_km",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 15,
+        "name": "i_ground_ka",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 16,
+        "name": "i_air_ka",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 17,
+        "name": "active",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 18,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "8ab245d414686cece8c65b465ff82a3120ec0af744747c8452ed84783cd92851"
+}

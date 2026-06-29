@@ -1,0 +1,88 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO calculations (user_id, org_id, inputs, template_program_id, result_data, result_text, result_html)\n                 VALUES ($1, $2, $3, $4, $5, $6, $7)\n                 RETURNING id, user_id, org_id, inputs, template_program_id, result_data, result_text,\n                           result_html, download_count, parent_calc_id, created_at",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "org_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "inputs",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 4,
+        "name": "template_program_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "result_data",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 6,
+        "name": "result_text",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "result_html",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "download_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 9,
+        "name": "parent_calc_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Jsonb",
+        "Int4",
+        "Jsonb",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "20c29c425f045678f56e2d229b9cc2d032837fa6352bd98b6ef3faf90b8efed1"
+}
