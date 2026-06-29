@@ -3,7 +3,6 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lightbulb } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ApiError } from '@/lib/api'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,18 +33,17 @@ export function Login() {
     } catch (err) {
       setLoginState('error')
       setError(err instanceof ApiError ? err.message : 'Error al iniciar sesión')
-      // Clear animation class after it finishes so it can retrigger
       const card = cardRef.current
       if (card) {
-        card.classList.add('login-short-circuit')
-        card.addEventListener('animationend', () => card.classList.remove('login-short-circuit'), { once: true })
+        card.classList.add('login-fault-border')
+        card.addEventListener('animationend', () => card.classList.remove('login-fault-border'), { once: true })
       }
       const icon = iconRef.current
       if (icon) {
-        icon.classList.add('login-short-circuit-icon')
-        icon.addEventListener('animationend', () => icon.classList.remove('login-short-circuit-icon'), { once: true })
+        icon.classList.add('login-fault-icon')
+        icon.addEventListener('animationend', () => icon.classList.remove('login-fault-icon'), { once: true })
       }
-      setTimeout(() => setLoginState('idle'), 800)
+      setTimeout(() => setLoginState('idle'), 500)
     }
   }
 
@@ -53,23 +51,13 @@ export function Login() {
   const isLoading = loginState === 'loading'
 
   return (
-    <div className={cn(
-      'flex min-h-[70vh] items-center justify-center transition-colors duration-500',
-      error && loginState !== 'loading' ? 'bg-black/15' : ''
-    )}>
-      {/* Arc flash overlay — brief white blind during error */}
-      {loginState === 'error' && (
-        <div
-          className="fixed inset-0 z-50 pointer-events-none bg-white login-short-circuit-overlay"
-        />
-      )}
+    <div className="flex min-h-[70vh] items-center justify-center">
+      {isSuccess && <div className="login-page-sweep" />}
 
-      <div ref={cardRef} className={isSuccess ? 'login-card-warmup' : ''}>
-        <Card className={cn('w-full max-w-md relative overflow-hidden', loginState === 'error' && 'login-error-border')}>
+      <div ref={cardRef}>
+        <Card className="w-full max-w-md relative overflow-hidden">
           <CardHeader className="text-center">
-            <div className={`mx-auto h-12 w-12 rounded-full flex items-center justify-center mb-2 transition-colors duration-300 ${
-              isSuccess ? 'bg-amber-400/20' : 'bg-primary/10'
-            }`}>
+            <div className="mx-auto h-12 w-12 rounded-full flex items-center justify-center mb-2 bg-primary/10">
               <div ref={iconRef} className={isSuccess ? 'login-bulb-on' : ''}>
                 <Lightbulb className={`h-6 w-6 transition-colors duration-300 ${
                   isSuccess ? 'text-amber-300' : 'text-primary'
@@ -131,7 +119,7 @@ export function Login() {
             <CardFooter className="flex flex-col gap-3">
               <Button
                 type="submit"
-                className={`w-full transition-colors duration-300 ${isSuccess ? 'bg-amber-500 hover:bg-amber-500 text-white' : ''}`}
+                className="w-full"
                 disabled={isLoading || isSuccess}
               >
                 {isSuccess ? 'Conectando...' : isLoading ? 'Verificando...' : 'Ingresar'}
