@@ -187,9 +187,7 @@ Fase Conexion: {fase}
 VOLTAJE: {voltaje} kV
 Codigo Conductor Fase: {conductor}
 Configuracion Conductores: {config}
-Circuito: {circuito}
 Tipo Uso Tramo: {uso}
-Circuitos: {circuitos}
 Distancia: {distancia} m
 
 VERIFICACIÓN POR DISTANCIA
@@ -229,9 +227,7 @@ FUENTES / CRITERIO DE DATOS
             fase = input.fase_conexion,
             conductor = input.conductor_code,
             config = input.configuracion,
-            circuito = input.circuito,
             uso = input.tipo_uso,
-            circuitos = input.circuitos,
             distancia = input.distancia_m,
             r_total = c.r_ohm_km * lkm,
             x_total = c.x_ohm_km * lkm,

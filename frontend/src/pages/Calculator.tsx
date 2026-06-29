@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { Zap, PenLine } from 'lucide-react'
+import { Navigate, useLocation } from 'react-router-dom'
+import { RotateCcw, Zap, PenLine } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useSubscription } from '@/hooks/useSubscription'
 import { api, ApiError } from '@/lib/api'
@@ -33,22 +33,20 @@ const DEFAULT_FORM: CalcInput = {
   voltaje_kv: 0.22,
   conductor_code: 'ACSR 2',
   configuracion: '3F4C',
-  circuito: 'abc',
   tipo_uso: 'Distribución',
-  circuitos: 'ABC',
   distancia_m: 100,
   template_program_code: 'digsilent',
 }
 
 function autoAdjustForConductor(code: string): Partial<CalcInput> {
   if (code.includes('MONOFASICA')) {
-    return { subtipo: 'Tramo BTA Monofasico', fase_conexion: 'A', configuracion: '1F2C', circuito: 'a', circuitos: 'A', tipo_uso: 'Acometida', voltaje_kv: 0.22 }
+    return { subtipo: 'Tramo BTA Monofasico', fase_conexion: 'A', configuracion: '1F2C', tipo_uso: 'Acometida', voltaje_kv: 0.22 }
   }
   if (code.includes('BIFASICA')) {
-    return { subtipo: 'Tramo BTA Bifasico', fase_conexion: 'AB', configuracion: '2F3C', circuito: 'ab', circuitos: 'AB', tipo_uso: 'Acometida', voltaje_kv: 0.22 }
+    return { subtipo: 'Tramo BTA Bifasico', fase_conexion: 'AB', configuracion: '2F3C', tipo_uso: 'Acometida', voltaje_kv: 0.22 }
   }
   if (code.includes('TRIFASICA')) {
-    return { subtipo: 'Tramo BTA Trifasico', fase_conexion: 'ABC', configuracion: '3F4C', circuito: 'abc', circuitos: 'ABC', tipo_uso: 'Acometida', voltaje_kv: 0.22 }
+    return { subtipo: 'Tramo BTA Trifasico', fase_conexion: 'ABC', configuracion: '3F4C', tipo_uso: 'Acometida', voltaje_kv: 0.22 }
   }
   return {}
 }
@@ -56,8 +54,13 @@ function autoAdjustForConductor(code: string): Partial<CalcInput> {
 export function Calculator() {
   const { isAuthenticated, isLoading } = useAuth()
   const { plan, refresh } = useSubscription()
+  const location = useLocation()
   const [conductors, setConductors] = useState<ConductorType[]>([])
-  const [form, setForm] = useState<CalcInput>(DEFAULT_FORM)
+  const [form, setForm] = useState<CalcInput>(() => {
+    const prefill = (location.state as { prefill?: CalcInput } | null)?.prefill
+    if (prefill) return { ...DEFAULT_FORM, ...prefill, nombre: '' }
+    return DEFAULT_FORM
+  })
   const [result, setResult] = useState<Calculation | null>(null)
   const [error, setError] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -77,6 +80,11 @@ export function Calculator() {
     setForm(f => ({ ...f, conductor_code: code, ...adjust }))
   }
 
+  const handleReset = () => {
+    setForm(DEFAULT_FORM)
+    setError('')
+  }
+
   const handleGenerate = async () => {
     setError('')
     setIsGenerating(true)
@@ -90,6 +98,13 @@ export function Calculator() {
     } finally {
       setIsGenerating(false)
     }
+  }
+
+  const handleNewTemplate = () => {
+    setResult(null)
+    setForm(DEFAULT_FORM)
+    setFormCollapsed(false)
+    setError('')
   }
 
   const hasResult = result !== null
@@ -139,16 +154,28 @@ export function Calculator() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Datos del tramo</CardTitle>
-                  {hasResult && (
+                  <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-xs text-muted-foreground"
-                      onClick={() => setFormCollapsed(true)}
+                      className="h-7 gap-1 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={handleReset}
+                      title="Limpiar todos los campos"
                     >
-                      Colapsar
+                      <RotateCcw className="h-3 w-3" />
+                      Limpiar
                     </Button>
-                  )}
+                    {hasResult && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-muted-foreground"
+                        onClick={() => setFormCollapsed(true)}
+                      >
+                        Colapsar
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -230,12 +257,6 @@ export function Calculator() {
                   </Select>
                 </div>
 
-                {/* CIRCUITO */}
-                <div className="space-y-1.5">
-                  <Label>Circuito <span className="text-destructive">*</span></Label>
-                  <Input value={form.circuito} onChange={e => set('circuito', e.target.value)} />
-                </div>
-
                 {/* USO */}
                 <div className="space-y-1.5">
                   <Label>Tipo Uso Tramo <span className="text-destructive">*</span></Label>
@@ -243,12 +264,6 @@ export function Calculator() {
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>{USOS.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}</SelectContent>
                   </Select>
-                </div>
-
-                {/* CIRCUITOS */}
-                <div className="space-y-1.5">
-                  <Label>Circuitos <span className="text-destructive">*</span></Label>
-                  <Input value={form.circuitos} onChange={e => set('circuitos', e.target.value)} />
                 </div>
 
                 {/* DISTANCIA */}
@@ -290,6 +305,7 @@ export function Calculator() {
               calculationId={result.id}
               plan={plan}
               downloadCount={result.download_count}
+              onNewTemplate={handleNewTemplate}
             />
           </div>
         )}

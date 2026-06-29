@@ -1,17 +1,23 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { History as HistoryIcon, ChevronDown, ChevronRight, Zap } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useSubscription } from '@/hooks/useSubscription'
 import { api } from '@/lib/api'
-import type { Calculation } from '@/lib/types'
+import type { Calculation, CalcInput } from '@/lib/types'
 import { TemplateDisplay } from '@/components/TemplateDisplay'
 import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
 
 function CalcRow({ calc, plan }: { calc: Calculation; plan: string }) {
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
   const inputs = calc.inputs
+
+  const handleUseAsBase = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    navigate('/calculator', { state: { prefill: inputs as unknown as CalcInput } })
+  }
 
   return (
     <div className="card-surface overflow-hidden">
@@ -22,15 +28,24 @@ function CalcRow({ calc, plan }: { calc: Calculation; plan: string }) {
         <div className="flex items-center gap-3 min-w-0">
           {open ? <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" /> : <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />}
           <div className="min-w-0">
-            <p className="text-sm font-medium truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
+              {inputs.nombre || '(sin nombre)'}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">
               {inputs.subtipo} — {inputs.conductor_code} — {inputs.fase_conexion}
             </p>
-            <p className="text-xs text-muted-foreground">{formatDate(calc.created_at)}</p>
+            <p className="text-[11px] text-muted-foreground/60">{formatDate(calc.created_at)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 ml-3 shrink-0">
           <Badge variant="secondary">{inputs.distancia_m} m</Badge>
           <Badge variant="outline">{inputs.voltaje_kv} kV</Badge>
+          <button
+            onClick={handleUseAsBase}
+            className="text-[11px] text-primary/70 hover:text-primary border border-primary/20 hover:border-primary/50 px-2 py-0.5 rounded-full transition-colors whitespace-nowrap"
+          >
+            Usar como base →
+          </button>
         </div>
       </button>
 
