@@ -75,9 +75,7 @@ export interface CalcInput {
   voltaje_kv: number
   conductor_code: string
   configuracion: string
-  circuito: string
   tipo_uso: string
-  circuitos: string
   distancia_m: number
   template_program_code: string
 }

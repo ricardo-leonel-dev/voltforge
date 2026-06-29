@@ -40,14 +40,8 @@ pub struct CalcInput {
     #[validate(length(min = 1, message = "Configuración requerida"))]
     pub configuracion: String,
 
-    #[validate(length(min = 1, message = "Circuito requerido"))]
-    pub circuito: String,
-
     #[validate(length(min = 1, message = "Tipo de uso requerido"))]
     pub tipo_uso: String,
-
-    #[validate(length(min = 1, message = "Circuitos requerido"))]
-    pub circuitos: String,
 
     #[validate(range(min = 0.01, message = "Distancia debe ser mayor que 0"))]
     pub distancia_m: f64,

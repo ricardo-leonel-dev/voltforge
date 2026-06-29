@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, Copy, FileDown } from 'lucide-react'
+import { Check, Copy, FileDown, Plus } from 'lucide-react'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
 import { api, ApiError } from '@/lib/api'
@@ -44,6 +44,7 @@ export interface TemplateDisplayProps {
   plan?: string
   downloadCount?: number
   className?: string
+  onNewTemplate?: () => void
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -268,6 +269,19 @@ function S4({ d }: { d: Section4 }) {
 
 // ── Botones de acción ────────────────────────────────────────────────────────
 
+function NewTemplateButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button
+      size="sm"
+      className="gap-1.5 text-xs h-8 bg-primary text-primary-foreground hover:bg-primary/90 electric-glow"
+      onClick={onClick}
+    >
+      <Plus className="h-3.5 w-3.5" />
+      Nueva plantilla
+    </Button>
+  )
+}
+
 function CopyAllButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
   return (
@@ -353,13 +367,17 @@ export function TemplateDisplay({
   plan,
   downloadCount,
   className,
+  onNewTemplate,
 }: TemplateDisplayProps) {
   if (!resultData) {
     return (
       <div className={cn('space-y-2', className)}>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
           <h3 className="text-sm font-semibold text-foreground">Plantilla generada</h3>
-          {resultText && <CopyAllButton text={resultText} />}
+          <div className="flex items-center gap-2 flex-wrap">
+            {resultText && <CopyAllButton text={resultText} />}
+            {onNewTemplate && <NewTemplateButton onClick={onNewTemplate} />}
+          </div>
         </div>
         <pre className="p-4 text-xs text-foreground/90 font-mono whitespace-pre-wrap leading-relaxed bg-surface border border-border rounded-lg overflow-x-auto">
           {resultText ?? ''}
@@ -384,6 +402,7 @@ export function TemplateDisplay({
             plan={plan}
             initialDownloadCount={downloadCount}
           />
+          {onNewTemplate && <NewTemplateButton onClick={onNewTemplate} />}
         </div>
       </div>
 
