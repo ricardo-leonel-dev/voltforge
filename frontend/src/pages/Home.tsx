@@ -1,5 +1,5 @@
 import { Link, Navigate } from 'react-router-dom'
-import { Zap, Calculator, History, Shield, ArrowRight } from 'lucide-react'
+import { Zap, Calculator, History, Star, Crown, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -11,50 +11,60 @@ export function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center text-center py-12 gap-12">
-      {/* Hero */}
-      <div className="space-y-4 max-w-2xl">
-        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary font-medium">
-          <Zap className="h-3 w-3" />
-          DIgSILENT PowerFactory
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          Cálculos eléctricos{' '}
-          <span className="text-primary">precisos y rápidos</span>
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-          Genera plantillas listas para importar en DIgSILENT PowerFactory y otros programas de simulación eléctrica. Ahorra tiempo y elimina errores manuales.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-          <Button size="lg" asChild className="electric-glow">
-            <Link to="/register">
-              Comenzar gratis
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link to="/login">Iniciar sesión</Link>
-          </Button>
+    <div className="flex flex-col items-center text-center py-16 gap-20">
+
+      {/* ── Hero ──────────────────────────────────────────────────────── */}
+      <div className="relative w-full max-w-3xl mx-auto">
+        <div className="absolute inset-0 dot-grid rounded-3xl opacity-50 pointer-events-none" />
+        <div className="relative z-10 space-y-7 max-w-2xl mx-auto py-10 px-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary font-medium">
+            <Zap className="h-3 w-3" />
+            DIgSILENT PowerFactory · PSCAD · ETAP
+          </div>
+
+          <h1 className="text-5xl sm:text-7xl font-black tracking-tight leading-[1.05]">
+            Plantillas técnicas.{' '}
+            <span className="font-mono text-primary">//</span>
+            <br />
+            Cero transcripción.
+          </h1>
+
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto leading-relaxed">
+            Ingresa los parámetros de tu tramo desde ArcGIS. Obtén los 4 bloques DIgSILENT
+            listos para importar: Line&nbsp;Type&nbsp;Basic, Load&nbsp;Flow, ElmLne&nbsp;Basic y ElmLne&nbsp;Load&nbsp;Flow.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-1">
+            <Button size="lg" asChild className="electric-glow">
+              <Link to="/register">
+                Comenzar gratis
+                <Zap className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/login">Iniciar sesión</Link>
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Features */}
+      {/* ── Features ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl">
         {[
           {
             icon: Calculator,
             title: 'Calculadora completa',
-            desc: '35+ tipos de conductor soportados: ACSR, TTU Cu, Dúplex AL, Tríplex AL y acometidas.',
+            desc: '35+ conductores: ACSR, TTU Cu, Dúplex AL, Tríplex AL, acometidas mono/bi/trifásicas. Parámetros R\', X\', R0\', X0\' calculados por tramo.',
           },
           {
             icon: Zap,
             title: 'Plantillas DIgSILENT',
-            desc: 'Genera los 4 bloques de datos requeridos por DIgSILENT PowerFactory: Line Type Basic, Load Flow, ElmLne Basic y Load Flow.',
+            desc: '4 bloques requeridos por DIgSILENT: Line Type Basic, Line Type Load Flow, ElmLne Basic, ElmLne Load Flow. Sin transcripción manual.',
           },
           {
             icon: History,
             title: 'Historial de cálculos',
-            desc: 'Todos tus cálculos guardados y disponibles. Revísalos, compáralos y reutilízalos.',
+            desc: 'Registro de cálculos con nombre y descripción. Compara tramos, reutiliza configuraciones base, exporta a PDF.',
           },
         ].map(({ icon: Icon, title, desc }) => (
           <div key={title} className="card-surface p-5 text-left space-y-2 electric-border">
@@ -67,42 +77,110 @@ export function Home() {
         ))}
       </div>
 
-      {/* Pricing */}
-      <div className="w-full max-w-2xl">
-        <h2 className="text-xl font-bold mb-6">Planes</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="card-surface p-6 text-left space-y-4">
+      {/* ── Pricing ───────────────────────────────────────────────────── */}
+      <div className="w-full max-w-4xl">
+        <h2 className="text-3xl font-black tracking-tight">Niveles de acceso</h2>
+        <p className="text-sm text-muted-foreground mt-1 mb-10">
+          Elige el voltaje que necesitas.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 items-stretch">
+
+          {/* FREE — powered down */}
+          <div className="bg-surface rounded-lg border border-border p-6 text-left space-y-5 flex flex-col opacity-90">
             <div>
-              <p className="text-sm text-muted-foreground">Gratuito</p>
-              <p className="text-2xl font-bold">$0 <span className="text-sm font-normal text-muted-foreground">/ mes</span></p>
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="h-4 w-4 text-muted-foreground" />
+                <p className="text-sm font-semibold text-muted-foreground">Gratuito</p>
+              </div>
+              <p className="text-3xl font-black">$0
+                <span className="text-sm font-normal text-muted-foreground ml-1">/ mes</span>
+              </p>
             </div>
-            <ul className="text-sm space-y-2 text-muted-foreground">
-              <li className="flex items-center gap-2"><Shield className="h-3.5 w-3.5 text-primary" />2 plantillas por semana</li>
-              <li className="flex items-center gap-2"><Shield className="h-3.5 w-3.5 text-primary" />Historial de cálculos</li>
-              <li className="flex items-center gap-2"><Shield className="h-3.5 w-3.5 text-primary" />35+ conductores</li>
+            <ul className="text-sm space-y-2.5 text-muted-foreground flex-1">
+              {[
+                '2 cálculos por día (reset a las 00:00)',
+                'Copia de parámetros al portapapeles',
+                'Acceso al catálogo completo de 35+ conductores',
+              ].map(f => (
+                <li key={f} className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-muted-foreground/50 mt-0.5 shrink-0" />
+                  {f}
+                </li>
+              ))}
             </ul>
             <Button variant="outline" className="w-full" asChild>
               <Link to="/register">Registrarse</Link>
             </Button>
           </div>
 
-          <div className="card-surface p-6 text-left space-y-4 border-primary/50 electric-glow">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <p className="text-sm text-primary font-medium">Pro</p>
-                <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">Popular</span>
-              </div>
-              <p className="text-2xl font-bold text-primary">Contactar</p>
+          {/* BÁSICO — warming up */}
+          <div className="bg-surface rounded-lg border border-accent/50 p-6 text-left space-y-5 flex flex-col relative">
+            <div className="absolute -top-3 left-4">
+              <span className="text-[10px] bg-accent text-accent-foreground font-bold px-2.5 py-0.5 rounded-full tracking-wide">
+                NUEVO
+              </span>
             </div>
-            <ul className="text-sm space-y-2 text-muted-foreground">
-              <li className="flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-accent" />Plantillas ilimitadas</li>
-              <li className="flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-accent" />Múltiples usuarios por org</li>
-              <li className="flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-accent" />Soporte prioritario</li>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="h-4 w-4 text-accent" />
+                <p className="text-sm font-semibold text-accent">Básico</p>
+              </div>
+              <p className="text-3xl font-black text-accent">Contactar</p>
+            </div>
+            <ul className="text-sm space-y-2.5 flex-1">
+              {[
+                'Cálculos ilimitados sin cuota diaria',
+                'Historial de 30 días',
+                'PDF exportable (hasta 5 descargas por cálculo)',
+                'Un software de simulación habilitado',
+              ].map(f => (
+                <li key={f} className="flex items-start gap-2 text-foreground/80">
+                  <Check className="h-3.5 w-3.5 text-accent mt-0.5 shrink-0" />
+                  {f}
+                </li>
+              ))}
             </ul>
-            <Button className="w-full" asChild>
+            <Button variant="outline" className="w-full border-accent/40 text-accent hover:bg-accent/10 hover:text-accent" asChild>
               <Link to="/register">Empezar</Link>
             </Button>
           </div>
+
+          {/* PRO — full power, animated border */}
+          <div className="pro-card-border-wrap flex flex-col relative" style={{ filter: 'drop-shadow(0 0 24px rgba(14,165,233,0.2))' }}>
+            <div className="pro-card-border-inner p-6 text-left space-y-5 flex flex-col relative">
+              <div className="absolute -top-3 left-4">
+                <span className="text-[10px] bg-primary text-primary-foreground font-bold px-2.5 py-0.5 rounded-full tracking-wide">
+                  POPULAR
+                </span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Crown className="h-4 w-4 text-primary" />
+                  <p className="text-sm font-semibold text-primary">Pro</p>
+                </div>
+                <p className="text-3xl font-black text-primary">Contactar</p>
+              </div>
+              <ul className="text-sm space-y-2.5 flex-1">
+                {[
+                  'Cálculos ilimitados sin restricciones',
+                  'Historial permanente sin caducidad',
+                  'PDF ilimitados por cálculo',
+                  'Todos los softwares: DIgSILENT, PSCAD, ETAP',
+                  'Múltiples usuarios en la misma organización',
+                ].map(f => (
+                  <li key={f} className="flex items-start gap-2 text-foreground/80">
+                    <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button className="w-full" asChild>
+                <Link to="/register">Empezar</Link>
+              </Button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

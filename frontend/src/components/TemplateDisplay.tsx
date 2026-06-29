@@ -22,8 +22,7 @@ interface Section2 {
   neutral_params: NeutroLF | null
 }
 interface Section3 {
-  name: string; type: string; terminal_i: string; terminal_j: string
-  zone: string; area: string; parallel_lines: number
+  name: string; type: string; parallel_lines: number
   length_km: number; derating_factor: number; type_of_line: string; line_model: string
 }
 interface Section4 {
@@ -230,10 +229,6 @@ function S3({ d }: { d: Section3 }) {
     <DigsPanel title="3. Line / ElmLne — Basic Data" activeTab="Basic Data" tabs={TABS_ELM_LNE}>
       <Field label="Name" value={d.name} wide />
       <Field label="Type" value={d.type} wide />
-      <Field label="Terminal i" value={d.terminal_i} wide />
-      <Field label="Terminal j" value={d.terminal_j} wide />
-      <Field label="Zone" value={d.zone} />
-      <Field label="Area" value={d.area} />
       <Field label="Out of Service" value="NO marcar" />
       <Group title="Number of" className="w-full sm:w-72">
         <Field label="parallel Lines" value={d.parallel_lines} />

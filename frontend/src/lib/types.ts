@@ -68,6 +68,8 @@ export interface ConductorType {
 }
 
 export interface CalcInput {
+  nombre: string
+  descripcion?: string
   subtipo: string
   fase_conexion: string
   voltaje_kv: number
@@ -77,8 +79,6 @@ export interface CalcInput {
   tipo_uso: string
   circuitos: string
   distancia_m: number
-  terminal_i: string
-  terminal_j: string
   template_program_code: string
 }
 

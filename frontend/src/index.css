@@ -3,6 +3,13 @@
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
 @import '@fontsource/inter/700.css';
+@import '@fontsource/inter/900.css';
+
+@property --pro-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
 
 @tailwind base;
 @tailwind components;
@@ -76,4 +83,94 @@
   .card-surface {
     @apply bg-surface rounded-lg border border-border;
   }
+
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(14, 165, 233, 0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .pro-card-border-wrap {
+    padding: 2px;
+    border-radius: calc(0.5rem + 2px);
+    background: conic-gradient(
+      from var(--pro-angle) at 50% 50%,
+      transparent 270deg,
+      #0EA5E9 300deg,
+      #38BDF8 318deg,
+      transparent 336deg
+    );
+    animation: pro-sweep 4s linear infinite;
+  }
+
+  .pro-card-border-inner {
+    background: #1E293B;
+    border-radius: 0.5rem;
+    height: 100%;
+  }
+}
+
+/* ── Login animations ───────────────────────────────────────────────────────── */
+
+/* Error: ícono parpadea en opacidad — corte de tensión momentáneo */
+@keyframes fault-icon-flicker {
+  0%,100% { opacity: 1; }
+  20%     { opacity: 0.25; }
+  45%     { opacity: 0.8; }
+  65%     { opacity: 0.15; }
+}
+
+.login-fault-icon { animation: fault-icon-flicker 0.4s ease-in-out; }
+
+/* Error: halo rojo tenue en el card — un solo pulso contenido */
+@keyframes fault-border-pulse {
+  0%,100% { box-shadow: none; }
+  35%     { box-shadow: 0 0 0 1px rgba(239,68,68,0.45), 0 0 14px rgba(239,68,68,0.12); }
+}
+
+.login-fault-border { animation: fault-border-pulse 0.4s ease-in-out; }
+
+/* Success: ícono se enciende en ámbar — warmup gradual */
+@keyframes bulb-glow {
+  0%   { filter: brightness(0.6) grayscale(0.8); color: #94A3B8; }
+  20%  { filter: brightness(1.1) grayscale(0.3) drop-shadow(0 0 4px #fbbf24); color: #fcd34d; }
+  45%  { filter: brightness(1.6) drop-shadow(0 0 12px #fbbf24) drop-shadow(0 0 28px #f59e0b); color: #fbbf24; }
+  100% { filter: brightness(1.8) drop-shadow(0 0 14px #fbbf24) drop-shadow(0 0 32px #f59e0b); color: #fef3c7; }
+}
+
+.login-bulb-on { animation: bulb-glow 0.9s ease-out forwards; }
+
+/* Success: barrido de luz suave por toda la página, de abajo hacia arriba */
+@keyframes sweep-up {
+  0%   { transform: translateY(100vh); opacity: 0; }
+  18%  { opacity: 1; }
+  72%  { opacity: 0.65; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+.login-page-sweep {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(14, 165, 233, 0.05) 25%,
+    rgba(248, 250, 252, 0.09) 50%,
+    rgba(14, 165, 233, 0.05) 75%,
+    transparent 100%
+  );
+  animation: sweep-up 1s ease-in-out forwards;
+}
+
+@keyframes pro-sweep {
+  to { --pro-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-fault-icon,
+  .login-fault-border,
+  .login-page-sweep,
+  .login-bulb-on      { animation: none; }
+  .pro-card-border-wrap { animation: none; background: #334155; }
 }
