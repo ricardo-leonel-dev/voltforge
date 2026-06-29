@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE weekly_usage SET template_count = template_count + 1 WHERE id = $1\n         RETURNING id, user_id, org_id, week_start, template_count",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "org_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "week_start",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 4,
+        "name": "template_count",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "79ba6d144500222e7e5c49d0ca407d9ae9a636e8dfcac97bebf0c67e537037c4"
+}

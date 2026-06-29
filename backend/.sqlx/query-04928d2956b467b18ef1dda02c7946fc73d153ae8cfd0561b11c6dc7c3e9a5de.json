@@ -1,0 +1,80 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE subscriptions\n         SET plan = $2, status = $3, program_code = $4, activated_by = $5, updated_at = NOW()\n         WHERE id = $1\n         RETURNING id, org_id, plan, status, activated_by, stripe_customer_id, expires_at,\n                   program_code, created_at, updated_at",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "org_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "plan",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "status",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "activated_by",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "stripe_customer_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "expires_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "program_code",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "04928d2956b467b18ef1dda02c7946fc73d153ae8cfd0561b11c6dc7c3e9a5de"
+}

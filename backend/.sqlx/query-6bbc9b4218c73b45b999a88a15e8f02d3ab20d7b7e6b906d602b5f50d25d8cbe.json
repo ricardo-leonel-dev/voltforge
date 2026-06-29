@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE calculations SET download_count = download_count + 1 WHERE id = $1\n         RETURNING download_count",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "download_count",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "6bbc9b4218c73b45b999a88a15e8f02d3ab20d7b7e6b906d602b5f50d25d8cbe"
+}
