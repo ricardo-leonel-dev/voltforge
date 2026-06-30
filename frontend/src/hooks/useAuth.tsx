@@ -9,6 +9,7 @@ interface AuthContextValue {
   login: (req: LoginRequest) => Promise<void>
   register: (req: RegisterRequest) => Promise<void>
   logout: () => void
+  refreshUser: () => Promise<void>
   isAuthenticated: boolean
   isSuperAdmin: boolean
 }
@@ -55,6 +56,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null)
   }, [])
 
+  const refreshUser = useCallback(async () => {
+    const updated = await api.auth.me()
+    setUser(updated)
+  }, [])
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -63,6 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       register,
       logout,
+      refreshUser,
       isAuthenticated: !!user,
       isSuperAdmin: user?.role === 'superadmin',
     }}>

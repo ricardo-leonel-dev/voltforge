@@ -4,7 +4,7 @@ use crate::{
     auth::{jwt::{create_token, Claims}, password},
     db::users,
     error::AppError,
-    models::user::{AuthResponse, LoginRequest, RegisterRequest},
+    models::user::{AuthResponse, LoginRequest, RegisterRequest, UpdateMeRequest},
     state::AppState,
 };
 
@@ -14,7 +14,6 @@ pub async fn register(
 ) -> Result<Json<AuthResponse>, AppError> {
     req.validate().map_err(|e| AppError::Validation(e.to_string()))?;
 
-    // Verificar email único
     if users::find_by_email(&state.db, &req.email).await?.is_some() {
         return Err(AppError::Conflict("El email ya está registrado".to_string()));
     }
@@ -27,7 +26,6 @@ pub async fn register(
 
     let password_hash = password::hash(&req.password)?;
 
-    // TX: crear org + usuario + suscripción
     let mut tx = state.db.begin().await.map_err(AppError::Database)?;
 
     let org = sqlx::query_as!(
@@ -43,7 +41,7 @@ pub async fn register(
         crate::models::user::UserPublic,
         "INSERT INTO users (org_id, email, name, password_hash, role)
          VALUES ($1, $2, $3, $4, 'user')
-         RETURNING id, org_id, email, name, role, created_at",
+         RETURNING id, org_id, email, name, role, avatar_url, created_at",
         org.id, req.email, req.name, password_hash
     )
     .fetch_one(&mut *tx)
@@ -88,6 +86,7 @@ pub async fn login(
         email: user.email,
         name: user.name,
         role: user.role,
+        avatar_url: user.avatar_url,
         created_at: user.created_at,
     };
 
@@ -102,4 +101,44 @@ pub async fn me(
         .await?
         .ok_or_else(|| AppError::NotFound("Usuario no encontrado".to_string()))?;
     Ok(Json(user))
+}
+
+pub async fn patch_me(
+    State(state): State<AppState>,
+    claims: Claims,
+    Json(req): Json<UpdateMeRequest>,
+) -> Result<Json<crate::models::user::UserPublic>, AppError> {
+    let new_password_hash = if let Some(new_pass) = &req.new_password {
+        let current = req.current_password.as_deref().ok_or_else(||
+            AppError::Validation("Se requiere la contraseña actual para cambiarla".to_string())
+        )?;
+
+        let user = users::find_by_id_full(&state.db, claims.sub)
+            .await?
+            .ok_or_else(|| AppError::NotFound("Usuario no encontrado".to_string()))?;
+
+        let valid = password::verify(current, &user.password_hash)?;
+        if !valid {
+            return Err(AppError::Validation("Contraseña actual incorrecta".to_string()));
+        }
+
+        if new_pass.len() < 8 {
+            return Err(AppError::Validation("La nueva contraseña debe tener al menos 8 caracteres".to_string()));
+        }
+
+        Some(password::hash(new_pass)?)
+    } else {
+        None
+    };
+
+    let updated = users::update_user(
+        &state.db,
+        claims.sub,
+        req.name.as_deref(),
+        req.email.as_deref(),
+        new_password_hash.as_deref(),
+        req.avatar_url.as_deref(),
+    ).await?;
+
+    Ok(Json(updated))
 }

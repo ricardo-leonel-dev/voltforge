@@ -8,6 +8,7 @@ import { Calculator } from '@/pages/Calculator'
 import { History } from '@/pages/History'
 import { Subscription } from '@/pages/Subscription'
 import { AdminDashboard } from '@/pages/admin/Dashboard'
+import { Profile } from '@/pages/Profile'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/history" element={<History />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

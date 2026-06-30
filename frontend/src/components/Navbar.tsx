@@ -5,6 +5,26 @@ import { useAuth } from '@/hooks/useAuth'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
 
+function getInitials(name: string) {
+  return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2)
+}
+
+function NavAvatar({ name, avatarUrl }: { name: string; avatarUrl?: string | null }) {
+  return (
+    <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-primary/30">
+      {avatarUrl ? (
+        <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center bg-primary/10">
+          <span className="font-mono text-[10px] font-semibold text-primary leading-none">
+            {getInitials(name)}
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function Navbar() {
   const { user, logout, isAuthenticated, isSuperAdmin } = useAuth()
   const navigate = useNavigate()
@@ -58,7 +78,16 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           {isAuthenticated ? (
             <>
-              <span className="hidden sm:block text-xs text-muted-foreground">{user?.name}</span>
+              <NavLink
+                to="/profile"
+                className={({ isActive }) => cn(
+                  'hidden sm:flex items-center gap-1.5 text-xs px-2 py-1 rounded-md transition-colors',
+                  isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-surface'
+                )}
+              >
+                <NavAvatar name={user?.name ?? ''} avatarUrl={user?.avatar_url} />
+                <span>{user?.name}</span>
+              </NavLink>
               <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden md:flex gap-1">
                 <LogOut className="h-4 w-4" />
                 Salir
@@ -104,6 +133,10 @@ export function Navbar() {
               Admin
             </NavLink>
           )}
+          <NavLink to="/profile" className={navLinkClass} onClick={() => setMobileOpen(false)}>
+            <NavAvatar name={user?.name ?? ''} avatarUrl={user?.avatar_url} />
+            Mi perfil
+          </NavLink>
           <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm px-2 py-1 text-destructive hover:bg-surface rounded-md">
             <LogOut className="h-4 w-4" />
             Cerrar sesión

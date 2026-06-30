@@ -5,7 +5,7 @@ pub fn auth_router() -> Router<AppState> {
     Router::new()
         .route("/register", post(handlers::auth::register))
         .route("/login", post(handlers::auth::login))
-        .route("/me", get(handlers::auth::me))
+        .route("/me", get(handlers::auth::me).patch(handlers::auth::patch_me))
 }
 
 pub fn conductors_router() -> Router<AppState> {

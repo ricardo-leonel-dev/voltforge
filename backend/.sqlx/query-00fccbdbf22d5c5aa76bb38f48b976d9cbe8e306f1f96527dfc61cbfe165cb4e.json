@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, org_id, email, name, role, created_at FROM users ORDER BY created_at DESC",
+  "query": "INSERT INTO users (org_id, email, name, password_hash, role)\n         VALUES ($1, $2, $3, $4, 'user')\n         RETURNING id, org_id, email, name, role, avatar_url, created_at",
   "describe": {
     "columns": [
       {
@@ -30,12 +30,22 @@
       },
       {
         "ordinal": 5,
+        "name": "avatar_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
         "name": "created_at",
         "type_info": "Timestamptz"
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Text"
+      ]
     },
     "nullable": [
       false,
@@ -43,8 +53,9 @@
       false,
       false,
       false,
+      true,
       false
     ]
   },
-  "hash": "aeac50a47aff538f3cfc289cb0cd082dc4a41bab4ca964266cce98e2a28f2818"
+  "hash": "00fccbdbf22d5c5aa76bb38f48b976d9cbe8e306f1f96527dfc61cbfe165cb4e"
 }

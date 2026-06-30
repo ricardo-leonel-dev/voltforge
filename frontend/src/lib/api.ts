@@ -54,6 +54,9 @@ export const api = {
       request<AuthResponse>('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
 
     me: () => request<User>('/auth/me'),
+
+    updateMe: (body: { name?: string; email?: string; avatar_url?: string; current_password?: string; new_password?: string }) =>
+      request<User>('/auth/me', { method: 'PATCH', body: JSON.stringify(body) }),
   },
 
   conductors: {
